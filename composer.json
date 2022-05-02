@@ -1,0 +1,18 @@
+{
+    "name": "edsp/php",
+    "autoload": {
+        "psr-4": {
+            "Edsp\\Php\\": [
+                "app/",
+                "src/"
+            ]
+        }
+    },
+    "authors": [
+        {
+            "name": "EduardoDos-SantosP",
+            "email": "66569234+EduardoDos-SantosP@users.noreply.github.com"
+        }
+    ],
+    "require": {}
+}
