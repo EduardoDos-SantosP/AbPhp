@@ -5,6 +5,7 @@ namespace Edsp\Php\Annotations;
 
 
 use Attribute;
+use Edsp\Php\Views\View;
 
 #[Attribute]
 class Text extends FieldAnnotation
@@ -13,11 +14,14 @@ class Text extends FieldAnnotation
     {
         parent::__construct($label, $required);
 
-        $this->html = "
-            <div class='form-group'>
-                <label>$label</label>
-                <input type='text'>
-            </div>
-        ";
+        $this->html->addChild(
+            new View("
+                <label class='form-label'>$label</label>
+                <div class='input-group'>
+                    <input type='text' class='form-control'>
+                    <span class='input-group-text'><i class='fas fa-times text-dark'></i></span>
+                </div>
+            ")
+        );
     }
 }

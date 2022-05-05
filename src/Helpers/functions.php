@@ -1,6 +1,12 @@
 <?php
 
-function projectPath(): string {
+function throwHandled(string $message): void
+{
+    throw new Exception($message);
+}
+
+function projectPath(): string
+{
     return
         $_SERVER['DOCUMENT_ROOT']
         . '/'
@@ -12,4 +18,13 @@ function projectPath(): string {
             )
         )[0]
         . '/';
+}
+
+function debug(mixed $var, bool $die = false, bool $usePrintR = false): void
+{
+    $debug = $usePrintR ? 'print_r' : 'var_dump';
+    echo '<pre>';
+    $debug($var);
+    echo '</pre>';
+    if ($die) die();
 }

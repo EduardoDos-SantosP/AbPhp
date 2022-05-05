@@ -12,11 +12,19 @@
 body {
     background-color: var(--bg-color);
 }
+
 body > .content > header {
     background-color: var(--main-container-color);
     border-bottom: var(--border-default);
 }
+
 body > .content > .main-content {
     background-color: var(--main-container-color);
     border: var(--border-default);
+}
+
+.clear-input {
+    display: block;
+    position: absolute;
+    right: 10px;
 }
