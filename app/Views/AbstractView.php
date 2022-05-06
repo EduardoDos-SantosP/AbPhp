@@ -62,7 +62,7 @@ abstract class AbstractView implements IView
          * @var View $child
          */
         foreach ($this->childs as $i => $child)
-            $this->mountedHtml = $replace($i, $child->toString());
+            $this->mountedHtml = $replace($i, $child->toString(), true);
 
         $this->mountedHtml = $replace(null, '', true);
 

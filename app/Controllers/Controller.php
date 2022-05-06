@@ -8,10 +8,8 @@ use Edsp\Php\Annotations\FieldAnnotation;
 use Edsp\Php\Views\Page;
 use Edsp\Php\Views\View;
 use Illuminate\Support\Collection;
-use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionObject;
-use ReflectionProperty;
 
 abstract class Controller
 {
@@ -72,18 +70,32 @@ abstract class Controller
         if (!class_exists($modelName))
             throwHandled("A classe '$modelName' não foi encontrada!");
 
-        $modelProps = collect((new ReflectionClass($modelName))->getProperties());
+        $reflectionClass = new ReflectionClass($modelName);
+        $genealogy = [];
+        $parentClass = $reflectionClass->getParentClass();
+        while ($parentClass) {
+            array_unshift($genealogy, $parentClass);
+            $parentClass = $parentClass->getParentClass();
+        }
+        $genealogy[] = $reflectionClass;
 
-        return $modelProps
-            ->map(
-                function (ReflectionProperty $p) {
-                    return
-                        collect($p->getAttributes())
-                            ->map(fn(ReflectionAttribute $a) => $a->newInstance())
-                            ->first(fn(object $a) => is_a($a, FieldAnnotation::class));
-                }
-            )
-            ->filter()
-            ->map(fn(FieldAnnotation $a) => $a->html->toString());
+        $modelFieldsString = new Collection();
+
+        /*** @var ReflectionClass $class */
+        foreach ($genealogy as $class)
+            foreach ($class->getProperties() as $prop) {
+                /*** @var FieldAnnotation $field */
+                $field = collect($prop->getAttributes())
+                    ->map(fn($a) => $a->newInstance())
+                    ->first(fn($a) => is_a($a, FieldAnnotation::class));
+
+                if (!$field) continue;
+
+                $modelFieldsString->offsetSet(
+                    key: $prop->name,
+                    value: $field->bindToModel($prop)->toString()
+                );
+            }
+        return $modelFieldsString;
     }
 }
